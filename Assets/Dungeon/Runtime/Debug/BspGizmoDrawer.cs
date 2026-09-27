@@ -2,13 +2,14 @@ using UnityEngine;
 
 namespace Tesi.Dungeon
 {
-    /// <summary>Disegna radice e foglie BSP nella Scene view.</summary>
+    /// <summary>Disegna partizioni, stanze e corridoi nella Scene view.</summary>
     [RequireComponent(typeof(DungeonGeneratorController))]
     public sealed class BspGizmoDrawer : MonoBehaviour
     {
         private static readonly Color RootColor = new Color(1f, 0.8f, 0.2f, 1f);
         private static readonly Color LeafColor = new Color(0.2f, 0.9f, 1f, 1f);
         private static readonly Color RoomColor = new Color(0.3f, 1f, 0.3f, 1f);
+        private static readonly Color CorridorColor = new Color(1f, 0.2f, 0.8f, 1f);
 
         private DungeonGeneratorController controller;
 
@@ -40,6 +41,25 @@ namespace Tesi.Dungeon
                 if (leaf.Room.HasValue)
                 {
                     DrawBounds(leaf.Room.Value);
+                }
+            }
+
+            if (controller.LastCorridors == null)
+            {
+                return;
+            }
+
+            Gizmos.color = CorridorColor;
+
+            for (int i = 0; i < controller.LastCorridors.Count; i++)
+            {
+                DungeonCorridor corridor = controller.LastCorridors[i];
+
+                DrawBounds(corridor.FirstSegment);
+
+                if (corridor.SecondSegment.HasValue)
+                {
+                    DrawBounds(corridor.SecondSegment.Value);
                 }
             }
 
