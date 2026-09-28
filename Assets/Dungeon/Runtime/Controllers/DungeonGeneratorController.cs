@@ -10,6 +10,10 @@ namespace Tesi.Dungeon
         [Tooltip("Profilo contenente i parametri della generazione BSP.")]
         private DungeonGenerationProfile profile;
 
+        [SerializeField]
+        [Tooltip("Renderer che visualizza la griglia sulle Tilemap.")]
+        private DungeonTilemapRenderer tilemapRenderer;
+
         private BspGenerationResult lastResult;
 
         private IReadOnlyList<DungeonCorridor> lastCorridors;
@@ -20,17 +24,40 @@ namespace Tesi.Dungeon
         /// <summary>Corridoi prodotti dall'ultima generazione valida.</summary>
         public IReadOnlyList<DungeonCorridor> LastCorridors => lastCorridors;
 
+        private DungeonGrid lastGrid;
+
+        /// <summary>Griglia prodotta dall'ultima generazione valida.</summary>
+        public DungeonGrid LastGrid => lastGrid;
+
         /// <summary>Genera un nuovo albero usando il profilo assegnato.</summary>
         [ContextMenu("Generate Dungeon")]
         public void Generate()
         {
+            lastCorridors = null;
+            lastGrid = null;
+
+            if (tilemapRenderer != null)
+            {
+                tilemapRenderer.Clear();
+            }
+
             if (profile == null)
             {
                 lastResult = null;
-                lastCorridors = null;
 
                 Debug.LogError(
                     "Assign a DungeonGenerationProfile before generating.",
+                    this);
+
+                return;
+            }
+
+            if (tilemapRenderer == null)
+            {
+                lastResult = null;
+
+                Debug.LogError(
+                    "Assign a DungeonTilemapRenderer before generating.",
                     this);
 
                 return;
@@ -63,8 +90,19 @@ namespace Tesi.Dungeon
                 lastResult.Root,
                 config);
 
+            var rasterizer = new DungeonRasterizer();
+
+            lastGrid = rasterizer.RasterizeFloor(
+                config,
+                rooms,
+                lastCorridors);
+
+            rasterizer.BuildWalls(lastGrid);
+
+            tilemapRenderer.Render(lastGrid);
+
             Debug.Log(
-                $"BSP and rooms generated: {lastResult.NodeCount} nodes, " + 
+                $"Dungeon generated: {lastResult.NodeCount} nodes, " + 
                 $"{lastResult.Leaves.Count} leaves, " + 
                 $"{rooms.Count} rooms, " +
                 $"{lastCorridors.Count} corridors, " +
