@@ -18,28 +18,28 @@ namespace Tesi.Dungeon
 
         private IReadOnlyList<DungeonCorridor> lastCorridors;
 
+        private DungeonGrid lastGrid;
+
         /// <summary>Ultimo risultato generato, disponibile soltanto in memoria.</summary>
         public BspGenerationResult LastResult => lastResult;
 
         /// <summary>Corridoi prodotti dall'ultima generazione valida.</summary>
         public IReadOnlyList<DungeonCorridor> LastCorridors => lastCorridors;
 
-        private DungeonGrid lastGrid;
-
         /// <summary>Griglia prodotta dall'ultima generazione valida.</summary>
         public DungeonGrid LastGrid => lastGrid;
+
+        /// <summary>Profilo attualmente assegnato al controller.</summary>
+        public DungeonGenerationProfile Profile => profile;
+
+        /// <summary>Indica se il renderer Tilemap è stato assegnato.</summary>
+        public bool HasTilemapRenderer => tilemapRenderer != null;
 
         /// <summary>Genera un nuovo albero usando il profilo assegnato.</summary>
         [ContextMenu("Generate Dungeon")]
         public void Generate()
         {
-            lastCorridors = null;
-            lastGrid = null;
-
-            if (tilemapRenderer != null)
-            {
-                tilemapRenderer.Clear();
-            }
+            Clear();
 
             if (profile == null)
             {
@@ -108,6 +108,19 @@ namespace Tesi.Dungeon
                 $"{lastCorridors.Count} corridors, " +
                 $"maximum depth: {lastResult.MaxReachedDepth}.",
                 this);
+        }
+
+        [ContextMenu("Clear Dungeon")]
+        public void Clear()
+        {
+            lastResult = null;
+            lastCorridors = null;
+            lastGrid = null;
+
+            if (tilemapRenderer != null)
+            {
+                tilemapRenderer.Clear();
+            }
         }
     }
 }

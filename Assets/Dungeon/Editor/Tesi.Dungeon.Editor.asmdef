@@ -1,0 +1,18 @@
+{
+    "name": "Tesi.Dungeon.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:1b46e84df38964775a5a970aff977e15"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
