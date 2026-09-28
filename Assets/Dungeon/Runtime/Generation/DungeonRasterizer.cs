@@ -67,6 +67,30 @@ namespace Tesi.Dungeon
             return grid;
         }
 
+        public void BuildWalls(DungeonGrid grid)
+        {
+            if (grid == null)
+            {
+                throw new ArgumentNullException(nameof(grid));
+            }
+
+            for (int x = 0; x < grid.Width; x++)
+            {
+                for (int y = 0; y < grid.Height; y++)
+                {
+                    if (grid[x, y] != CellType.Empty)
+                    {
+                        continue;
+                    }
+
+                    if (HasFloorNeighbor(grid, x, y))
+                    {
+                        grid[x, y] = CellType.Wall;
+                    }
+                }
+            }
+        }
+
         private static void FillRectangle(
             DungeonGrid grid,
             RectInt rectangle,
@@ -94,6 +118,38 @@ namespace Tesi.Dungeon
                    inner.xMax <= outer.xMax &&
                    inner.yMin >= outer.yMin &&
                    inner.yMax <= outer.yMax;
+        }
+
+        private static bool HasFloorNeighbor(
+            DungeonGrid grid, 
+            int cellX, 
+            int cellY)
+        {
+            for (int offsetX = -1; offsetX <= 1; offsetX++)
+            {
+                for (int offsetY = -1; offsetY <= 1; offsetY++)
+                {
+                    if (offsetX == 0 && offsetY == 0)
+                    {
+                        continue;
+                    }
+
+                    int neighborX = cellX + offsetX;
+                    int neighborY = cellY + offsetY;
+
+                    if (!grid.IsInside(neighborX, neighborY))
+                    {
+                        continue;
+                    }
+
+                    if (grid[neighborX, neighborY] == CellType.Floor)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }

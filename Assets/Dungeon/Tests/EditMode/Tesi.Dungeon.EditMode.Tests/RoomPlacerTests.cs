@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 
-namespace Tesi.Dungeon.RoomPlacerTests
+namespace Tesi.Dungeon.Tests
 {
     public sealed class RoomPlacerTests
     {

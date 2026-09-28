@@ -51,6 +51,47 @@ namespace Tesi.Dungeon.Tests
 
         }
 
+        [Test]
+        public void BuildWalls_SurroundsFloorWithoutReplacingIt()
+        {
+            var grid = new DungeonGrid(5, 5);
+
+            grid[2, 2] = CellType.Floor;
+
+            var rasterizer = new DungeonRasterizer();
+
+            rasterizer.BuildWalls(grid);
+
+            for (int x = 0; x < grid.Width; x++)
+            {
+                for (int y = 0; y < grid.Height; y++)
+                {
+                    if (x == 2 && y == 2)
+                    {
+                        Assert.That(
+                            grid[x, y], 
+                            Is.EqualTo(CellType.Floor), 
+                            "The floor cell was overwritten.");
+
+                        continue;
+                    }
+                    
+                    bool isNeighbor = 
+                        x >= 1 && x <= 3 &&
+                        y >= 1 && y <= 3;
+
+                    CellType expected = isNeighbor 
+                        ? CellType.Wall 
+                        : CellType.Empty;
+
+                    Assert.That(
+                        grid[x, y],
+                        Is.EqualTo(expected),
+                        $"Unexpected cell type at ({x}, {y}).");
+                }
+            }
+        }
+
         private static DungeonGenerationConfig CreateDefaultConfig()
         {
             return new DungeonGenerationConfig(
