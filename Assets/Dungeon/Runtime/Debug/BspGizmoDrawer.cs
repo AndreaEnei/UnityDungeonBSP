@@ -11,6 +11,20 @@ namespace Tesi.Dungeon
         private static readonly Color RoomColor = new Color(0.3f, 1f, 0.3f, 1f);
         private static readonly Color CorridorColor = new Color(1f, 0.2f, 0.8f, 1f);
 
+        [Header("Visibility")]
+
+        [SerializeField]
+        private bool showRoot = true;
+
+        [SerializeField]
+        private bool showLeaves = true;
+
+        [SerializeField]
+        private bool showRooms = true;
+
+        [SerializeField]
+        private bool showCorridors = true;
+
         private DungeonGeneratorController controller;
 
         private void OnDrawGizmosSelected()
@@ -27,44 +41,50 @@ namespace Tesi.Dungeon
                 return;
             }
 
-            Gizmos.color = LeafColor;
-            for (int i = 0; i < result.Leaves.Count; i++)
+            if (showRoot)
             {
-                DrawBounds(result.Leaves[i].Bounds);
+                Gizmos.color = RootColor;
+                DrawBounds(result.Root.Bounds);
             }
 
-            Gizmos.color = RoomColor;
-            for (int i = 0; i < result.Leaves.Count; i++)
+            if (showLeaves)
             {
-                BspNode leaf = result.Leaves[i];
+                Gizmos.color = LeafColor;
 
-                if (leaf.Room.HasValue)
+                foreach (var leaf in result.Leaves)
                 {
-                    DrawBounds(leaf.Room.Value);
+                    DrawBounds(leaf.Bounds);
                 }
             }
 
-            if (controller.LastCorridors == null)
+            if (showRooms)
             {
-                return;
-            }
+                Gizmos.color = RoomColor;
 
-            Gizmos.color = CorridorColor;
-
-            for (int i = 0; i < controller.LastCorridors.Count; i++)
-            {
-                DungeonCorridor corridor = controller.LastCorridors[i];
-
-                DrawBounds(corridor.FirstSegment);
-
-                if (corridor.SecondSegment.HasValue)
+                foreach (var leaf in result.Leaves)
                 {
-                    DrawBounds(corridor.SecondSegment.Value);
+                    if (leaf.Room.HasValue)
+                    {
+                        DrawBounds(leaf.Room.Value);
+                    }
                 }
             }
 
-            Gizmos.color = RootColor;
-            DrawBounds(result.Root.Bounds);
+            if (showCorridors && controller.LastCorridors != null)
+            {
+                Gizmos.color = CorridorColor;
+
+                foreach (var corridor in controller.LastCorridors)
+                {
+                    DrawBounds(corridor.FirstSegment);
+
+                    if (corridor.SecondSegment.HasValue)
+                    {
+                        DrawBounds(corridor.SecondSegment.Value);
+                    }
+                }
+            }
+
         }
 
         private static void DrawBounds(RectInt bounds)

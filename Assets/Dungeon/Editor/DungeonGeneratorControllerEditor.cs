@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using System;
 
 namespace Tesi.Dungeon.Editor
 {
@@ -23,6 +24,25 @@ namespace Tesi.Dungeon.Editor
             {
                 if (GUILayout.Button("Generate Dungeon"))
                 {
+                    controller.Generate();
+
+                    EditorSceneManager.MarkSceneDirty(controller.gameObject.scene);
+
+                    SceneView.RepaintAll();
+                }
+
+                if (GUILayout.Button("New Seed And Generate"))
+                {
+                    DungeonGenerationProfile profile = controller.Profile;
+
+                    Undo.RecordObject(profile, "Change Dungeon Seed");
+
+                    int newSeed = Guid.NewGuid().GetHashCode() & int.MaxValue;
+
+                    profile.SetSeed(newSeed);
+
+                    EditorUtility.SetDirty(profile);
+
                     controller.Generate();
 
                     EditorSceneManager.MarkSceneDirty(controller.gameObject.scene);

@@ -60,6 +60,14 @@ namespace Tesi.Dungeon
         [Tooltip("Larghezza dei corridoi in celle.")]
         private int corridorWidth = 1;
 
+        /// <summary>Seed attualmente salvato nel profilo.<summary>
+        public int Seed => seed;
+
+        public void SetSeed(int newSeed)
+        {
+            seed = Mathf.Max(0, newSeed);
+        }
+
         /// <summary>Crea uno snapshot dei parametri per una generazione.</summary>
         public DungeonGenerationConfig ToConfig()
         {
