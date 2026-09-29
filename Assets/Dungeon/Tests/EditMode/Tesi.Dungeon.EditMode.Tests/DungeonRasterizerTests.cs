@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 
 namespace Tesi.Dungeon.Tests
@@ -92,6 +93,29 @@ namespace Tesi.Dungeon.Tests
             }
         }
 
+        [Test]
+        public void FullPipeline_SameConfigAndSeed_ProducesSameGrid()
+        {
+            DungeonGenerationConfig config = CreateDefaultConfig();
+
+            DungeonGrid firstGrid = GenerateCompleteGrid(config);
+            DungeonGrid secondGrid = GenerateCompleteGrid(config);   
+
+            Assert.That(secondGrid.Width, Is.EqualTo(firstGrid.Width));
+            Assert.That(secondGrid.Height, Is.EqualTo(firstGrid.Height));
+
+            for (int x = 0; x < firstGrid.Width; x++)
+            {
+                for (int y = 0; y < firstGrid.Height; y++)
+                {
+                    Assert.That(
+                        secondGrid[x,y], 
+                        Is.EqualTo(firstGrid[x,y]), 
+                        $"Cell ({x}, {y}) differs between identical generations.");
+                }
+            }
+        }
+
         private static DungeonGenerationConfig CreateDefaultConfig()
         {
             return new DungeonGenerationConfig(
@@ -124,6 +148,31 @@ namespace Tesi.Dungeon.Tests
                 }
             }
             
+        }
+
+        private static DungeonGrid GenerateCompleteGrid(DungeonGenerationConfig config)
+        {
+            var partitioner = new BspPartitioner();
+
+            BspGenerationResult bspResult = partitioner.Generate(config);
+
+            Assert.That(bspResult.IsSuccess, Is.True);
+
+            var roomPlacer = new RoomPlacer();
+
+            IReadOnlyList<RectInt> rooms = roomPlacer.PlaceRooms(bspResult.Leaves, config);
+
+            var connector = new CorridorConnector();
+
+            IReadOnlyList<DungeonCorridor> corridors = connector.Connect(bspResult.Root, config);
+
+            var rasterizer = new DungeonRasterizer();
+
+            DungeonGrid grid = rasterizer.RasterizeFloor(config, rooms, corridors);
+
+            rasterizer.BuildWalls(grid);
+
+            return grid;
         }
     }
 }

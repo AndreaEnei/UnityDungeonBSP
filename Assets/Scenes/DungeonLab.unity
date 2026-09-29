@@ -18664,6 +18664,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4e2e0abeba2846d79a5e624e7ccb423, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  showRoot: 1
+  showLeaves: 1
+  showRooms: 1
+  showCorridors: 1
 --- !u!114 &973609868
 MonoBehaviour:
   m_ObjectHideFlags: 0
