@@ -22,6 +22,8 @@ namespace Tesi.Dungeon
 
         private DungeonConnectivityResult lastConnectivityResult;
 
+        private DungeonGenerationMetrics lastMetrics;
+
         /// <summary>Ultimo risultato generato, disponibile soltanto in memoria.</summary>
         public BspGenerationResult LastResult => lastResult;
 
@@ -33,6 +35,9 @@ namespace Tesi.Dungeon
 
         /// <summary>Esito dell'ultima verifica di connettività.</summary>
         public DungeonConnectivityResult LastConnectivityResult => lastConnectivityResult;
+
+        /// <summary>Metriche prodotte dall'ultima generazione valida.</summary>
+        public DungeonGenerationMetrics LastMetrics => lastMetrics;
 
         /// <summary>Profilo attualmente assegnato al controller.</summary>
         public DungeonGenerationProfile Profile => profile;
@@ -108,14 +113,25 @@ namespace Tesi.Dungeon
 
             lastConnectivityResult = connectivityValidator.Validate(lastGrid);
 
+            var metricsCalculator = new DungeonMetricsCalculator();
+
+            lastMetrics = metricsCalculator.Calculate(
+                lastResult,
+                rooms,
+                lastCorridors,
+                lastGrid);
+
             tilemapRenderer.Render(lastGrid);
 
             Debug.Log(
-                $"Dungeon generated: {lastResult.NodeCount} nodes, " + 
-                $"{lastResult.Leaves.Count} leaves, " + 
-                $"{rooms.Count} rooms, " +
-                $"{lastCorridors.Count} corridors, " +
-                $"maximum depth: {lastResult.MaxReachedDepth}, " +
+                $"Dungeon generated: {lastMetrics.NodeCount} nodes, " + 
+                $"{lastMetrics.LeafCount} leaves, " + 
+                $"{lastMetrics.RoomCount} rooms, " +
+                $"{lastMetrics.CorridorCount} corridors, " +
+                $"maximum depth: {lastMetrics.MaxReachedDepth}, " +
+                $"floor: {lastMetrics.FloorCellCount}/" +
+                $"{lastMetrics.TotalCellCount} cells " +
+                $"({lastMetrics.FloorCoveragePercentage:F2}% coverage), " +
                 $"{lastConnectivityResult.ReachableFloorCells}/" +
                 $"{lastConnectivityResult.TotalFloorCells} reachable floor cells.",
                 this);
@@ -138,6 +154,7 @@ namespace Tesi.Dungeon
             lastCorridors = null;
             lastGrid = null;
             lastConnectivityResult = null;
+            lastMetrics = null;
 
             if (tilemapRenderer != null)
             {

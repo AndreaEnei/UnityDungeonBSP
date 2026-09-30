@@ -164,6 +164,26 @@ namespace Tesi.Dungeon.Tests
             Assert.That(result.IsConnected, Is.True);
         }
 
+        [Test]
+        [Category("Stress")]
+        public void FullPipeline_FirstThousandSeeds_ProduceConnectedDungeons()
+        {
+            const int seedCount = 1000;
+
+            for (int seed = 0; seed < seedCount; seed++)
+            {
+                DungeonGenerationConfig config = CreateConfig((uint)seed);
+
+                DungeonConnectivityResult result = GenerateAndValidate(config);
+
+                Assert.That(
+                    result.IsConnected,
+                    Is.True,
+                    $"Dungeon generated with seed {seed} has " +
+                    $"{result.UnreachableFloorCells} unreachable floor cells.");
+            }
+        }
+
         private static DungeonGenerationConfig CreateConfig(uint seed)
         {
             return new DungeonGenerationConfig(
