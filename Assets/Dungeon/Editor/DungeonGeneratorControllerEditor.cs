@@ -63,6 +63,8 @@ namespace Tesi.Dungeon.Editor
             EditorGUILayout.Space();
 
             DrawConnectivityResult(controller);
+
+            DrawMetrics(controller);
         }
 
         private static bool DrawValidation(DungeonGeneratorController controller)
@@ -142,6 +144,35 @@ namespace Tesi.Dungeon.Editor
                     $"{result.TotalFloorCells} floor cells are unreachable.",
                     MessageType.Error);
             }
+        }
+
+        private static void DrawMetrics(DungeonGeneratorController controller)
+        {
+            DungeonGenerationMetrics metrics = controller.LastMetrics;
+
+            if (metrics == null)
+            {
+                return;
+            }
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("Last Generation Metrics", EditorStyles.boldLabel);
+            
+            EditorGUILayout.LabelField("Nodes", metrics.NodeCount.ToString());
+            EditorGUILayout.LabelField("Leaves", metrics.LeafCount.ToString());
+            EditorGUILayout.LabelField("Rooms", metrics.RoomCount.ToString());
+            EditorGUILayout.LabelField("Corridors", metrics.CorridorCount.ToString());
+            EditorGUILayout.LabelField("Maximum Depth", metrics.MaxReachedDepth.ToString());
+
+            EditorGUILayout.Space();
+
+            EditorGUILayout.LabelField("Floor Cells", metrics.FloorCellCount.ToString());
+            EditorGUILayout.LabelField("Wall Cells", metrics.WallCellCount.ToString());
+            EditorGUILayout.LabelField("Empty Cells", metrics.EmptyCellCount.ToString());
+            EditorGUILayout.LabelField("Total Cells", metrics.TotalCellCount.ToString());
+            EditorGUILayout.LabelField("Floor Coverage", $"{metrics.FloorCoveragePercentage:F2}%");
+
         }
     }
 }

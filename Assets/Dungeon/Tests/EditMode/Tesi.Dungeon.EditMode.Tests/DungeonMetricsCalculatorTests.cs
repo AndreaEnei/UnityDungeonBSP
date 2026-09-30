@@ -7,7 +7,7 @@ namespace Tesi.Dungeon.Tests
     public sealed class DungeonMetricsCalculatorTests
     {
         [Test]
-        public void Calculate_ReturnExpectedStructuralAndGridMetrics()
+        public void Calculate_ReturnsExpectedStructuralAndGridMetrics()
         {
             var root = new BspNode(new RectInt(0, 0, 3, 2), depth: 0);
             var room = new RectInt(0, 0, 2, 1);
