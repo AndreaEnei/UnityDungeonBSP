@@ -8,7 +8,7 @@ Prototipo didattico di generazione procedurale tramite Binary Space Partitioning
 - Apple Silicon
 - Template 2D
 
-## Stato della Fase 2
+## Stato della Fase 3
 
 La pipeline implementa:
 
@@ -22,19 +22,12 @@ La pipeline implementa:
 - costruzione dei muri attorno alle celle di pavimento.
 - rendering tramite due Tilemap.
 - visualizzazione di debug tramite Gizmos.
-- Inspector personalizzato con validazione e comandi.
+- controllo della connettività tramite flood fill a quattro direzioni.
+- diagnostica di connettività visibile nell'Inspector.
+- metriche strutturali e conteggio delle celle della griglia.
+- Inspector personalizzato con validazione, comandi e risultati dell'ultima generazione.
 - preset confrontabili.
-- test Edit Mode di geometria e determinismo.
-
-Non sono ancora implementati:
-
-- controllo della connettività tramite flood fill.
-- diagnostica completa del risultato.
-- metriche descrittive.
-- personaggio e gameplay.
-- grafica definitiva.
-
-Questi elementi appartengono alle fasi successive.
+- test Edit Mode di geometria, determinismo, connettività e metriche.
 
 ## Generare un dungeon
 
@@ -43,7 +36,9 @@ Questi elementi appartengono alle fasi successive.
 3. Assegnare un `DungeonGenerationProfile`.
 4. Verificare che l'inspector mostri `Configuration is valid`.
 5. Premere `Generate Dungeon`.
-6. Osservare il risultato nella Game view o nella Scene view.
+6. Verificare che l'Inspector mostri `Dungeon connected`.
+7. Leggere le metriche dell'ultima generazione.
+8. Osservare il risultato nella Game view o nella Scene view.
 
 Non è necessario entrare in Play Mode.
 
@@ -75,6 +70,8 @@ Con questa versione del codice, la configurazione di riferimento produce:
 12 stanze
 11 corridoi
 profondità massima 4
+1820 celle di pavimento raggiungibili su 1820
+45,50% di copertura del pavimento
 ```
 
 Lo stesso seed, la stessa configurazione e la stessa versione dell'algoritmo devono produrre la stessa griglia finale.
@@ -109,6 +106,22 @@ Colori utilizzati:
 
 I toggle modificano soltanto la visualizzazione di debug e non rigenerano il dungeon.
 
+## Connettività e metriche
+
+Dopo la rasterizzazione, un flood fill parte dalla prima cella di pavimento e
+visita le celle adiacenti nelle quattro direzioni cardinali. Il dungeon è
+considerato connesso soltanto quando il numero di celle raggiunte coincide con
+il numero totale di celle di pavimento.
+
+L'Inspector riporta lo stato di connettività e le seguenti metriche:
+
+- nodi e foglie BSP.
+- stanze e corridoi.
+- profondità massima raggiunta.
+- celle di pavimento, muro e vuote.
+- numero totale di celle.
+- percentuale della mappa occupata dal pavimento.
+
 ## Screenshot di confronto
 
 ### Configurazione di riferimento
@@ -123,19 +136,25 @@ I toggle modificano soltanto la visualizzazione di debug e non rigenerano il dun
 
 ![Wide rooms, seed 12345](Documentation/Screenshots/wideRooms_seed_12345.png)
 
+### Diagnostica di connettività e metriche
+
+![Connettività e metriche, seed 12345](Documentation/Screenshots/connectivityMetrics_seed_12345.png)
+
 ## Eseguire i test
 
 1. Aprire `Window > General > Test Runner`.
 2. Selezionare `EditMode`.
 3. Premere `Run All`.
 
-La suite della Fase 2 contiene 20 casi:
+La suite della Fase 3 contiene 34 casi:
 
 - 8 sul partizionatore BSP.
 - 6 sul PRNG deterministico.
 - 2 sul posizionamento delle stanze.
 - 1 sulla costruzione dei corridoi.
 - 3 sulla rasterizzazione, sui muri e sulla griglia completa.
+- 13 sulla connettività, inclusi cinque seed espliciti, quattro configurazioni limite e una batteria di 1.000 seed.
+- 1 sul calcolo delle metriche.
 
 I test verificano, tra le altre cose:
 
@@ -147,6 +166,9 @@ I test verificano, tra le altre cose:
 - rasterizzazione completa del pavimento.
 - costruzione dei muri senza sovrascrivere il pavimento.
 - uguaglianza cella per cella di due generazioni identiche.
+- raggiungibilità di tutte le celle di pavimento.
+- mappe minime, profonde e strette, oltre a corridoi larghi.
+- conteggio coerente di celle e metriche strutturali.
 
 Tutti i test devono risultare verdi prima di modificare la baseline.
 
