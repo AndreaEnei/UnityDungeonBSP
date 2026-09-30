@@ -175,4 +175,4 @@ Tutti i test devono risultare verdi prima di modificare la baseline.
 ## Documentazione tecnica
 
 - [`Xorshift32.md`](Documentation/Xorshift32.md) descrive la scelta, il contratto e i limiti del PRNG.
-- [`FloodFillConnectivity.md`](Documentation/FloodFillConnectivity.md) descrive il modello di connettività, la BFS, la complessità e i test.
+- [`FloodFillConnectivity.md`](Documentation/FloodFillConnectivity.md) descrive il modello di connettività, la ricerca in ampiezza (BFS), la complessità e i test.
