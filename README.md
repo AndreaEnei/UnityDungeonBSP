@@ -7,7 +7,7 @@ Prototipo didattico di generazione procedurale tramite Binary Space Partitioning
 - Unity 2022.3.62f2 LTS
 - Template 2D
 
-## Stato della Fase 3
+## Funzionalità implementate
 
 La pipeline implementa:
 
@@ -155,7 +155,7 @@ L'Inspector riporta lo stato di connettività e le seguenti metriche:
 2. Selezionare `EditMode`.
 3. Premere `Run All`.
 
-La suite della Fase 3 contiene 34 casi:
+La suite contiene 34 casi Edit Mode:
 
 - 8 sul partizionatore BSP.
 - 6 sul PRNG deterministico.
