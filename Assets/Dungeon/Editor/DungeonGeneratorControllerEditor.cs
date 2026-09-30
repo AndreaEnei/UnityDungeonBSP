@@ -59,6 +59,10 @@ namespace Tesi.Dungeon.Editor
 
                 SceneView.RepaintAll();
             }
+
+            EditorGUILayout.Space();
+
+            DrawConnectivityResult(controller);
         }
 
         private static bool DrawValidation(DungeonGeneratorController controller)
@@ -109,5 +113,35 @@ namespace Tesi.Dungeon.Editor
             return canGenerate;
         }
 
+        private static void DrawConnectivityResult(DungeonGeneratorController controller)
+        {
+            DungeonConnectivityResult result = controller.LastConnectivityResult;
+
+            if (result == null)
+            {
+                EditorGUILayout.HelpBox(
+                    "No dungeon has been generated yet.",
+                    MessageType.Info);
+                    
+                return;
+            }
+
+            if (result.IsConnected)
+            {
+                EditorGUILayout.HelpBox(
+                    "Dungeon connected: " +
+                    $"{result.ReachableFloorCells}/" +
+                    $"{result.TotalFloorCells} floor cells are reachable.",
+                    MessageType.Info);
+            }
+            else
+            {
+                EditorGUILayout.HelpBox(
+                    "Dungeon disconnected: " +
+                    $"{result.UnreachableFloorCells} of " +
+                    $"{result.TotalFloorCells} floor cells are unreachable.",
+                    MessageType.Error);
+            }
+        }
     }
 }

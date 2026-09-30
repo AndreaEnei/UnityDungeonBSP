@@ -20,6 +20,8 @@ namespace Tesi.Dungeon
 
         private DungeonGrid lastGrid;
 
+        private DungeonConnectivityResult lastConnectivityResult;
+
         /// <summary>Ultimo risultato generato, disponibile soltanto in memoria.</summary>
         public BspGenerationResult LastResult => lastResult;
 
@@ -28,6 +30,9 @@ namespace Tesi.Dungeon
 
         /// <summary>Griglia prodotta dall'ultima generazione valida.</summary>
         public DungeonGrid LastGrid => lastGrid;
+
+        /// <summary>Esito dell'ultima verifica di connettività.</summary>
+        public DungeonConnectivityResult LastConnectivityResult => lastConnectivityResult;
 
         /// <summary>Profilo attualmente assegnato al controller.</summary>
         public DungeonGenerationProfile Profile => profile;
@@ -99,6 +104,10 @@ namespace Tesi.Dungeon
 
             rasterizer.BuildWalls(lastGrid);
 
+            var connectivityValidator = new DungeonConnectivityValidator();
+
+            lastConnectivityResult = connectivityValidator.Validate(lastGrid);
+
             tilemapRenderer.Render(lastGrid);
 
             Debug.Log(
@@ -106,8 +115,20 @@ namespace Tesi.Dungeon
                 $"{lastResult.Leaves.Count} leaves, " + 
                 $"{rooms.Count} rooms, " +
                 $"{lastCorridors.Count} corridors, " +
-                $"maximum depth: {lastResult.MaxReachedDepth}.",
+                $"maximum depth: {lastResult.MaxReachedDepth}, " +
+                $"{lastConnectivityResult.ReachableFloorCells}/" +
+                $"{lastConnectivityResult.TotalFloorCells} reachable floor cells.",
                 this);
+
+            if (!lastConnectivityResult.IsConnected)
+            {
+                Debug.LogError(
+                    "Dungeon is disconnected: " +
+                    $"{lastConnectivityResult.UnreachableFloorCells} " +
+                    "floor cells are unreachable.",
+                    this
+                );
+            }
         }
 
         [ContextMenu("Clear Dungeon")]
@@ -116,6 +137,7 @@ namespace Tesi.Dungeon
             lastResult = null;
             lastCorridors = null;
             lastGrid = null;
+            lastConnectivityResult = null;
 
             if (tilemapRenderer != null)
             {
