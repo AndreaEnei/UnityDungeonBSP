@@ -5,7 +5,6 @@ Prototipo didattico di generazione procedurale tramite Binary Space Partitioning
 ## Versione
 
 - Unity 2022.3.62f2 LTS
-- Apple Silicon
 - Template 2D
 
 ## Stato della Fase 3
@@ -28,6 +27,16 @@ La pipeline implementa:
 - Inspector personalizzato con validazione, comandi e risultati dell'ultima generazione.
 - preset confrontabili.
 - test Edit Mode di geometria, determinismo, connettività e metriche.
+
+## Aprire il progetto
+
+1. Clonare il repository oppure scaricarlo come archivio ZIP.
+2. In Unity Hub selezionare `Add project from disk` e indicare la cartella principale del repository.
+3. Aprire il progetto con Unity 2022.3.62f2 LTS.
+4. Aprire la scena `Assets/Scenes/DungeonLab.unity`.
+
+Le cartelle generate localmente da Unity, come `Library`, `Temp`, `Logs` e
+`UserSettings`, non sono incluse nel repository e vengono ricreate automaticamente.
 
 ## Generare un dungeon
 

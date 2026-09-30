@@ -4,7 +4,7 @@ using UnityEngine.Tilemaps;
 
 namespace Tesi.Dungeon
 {
-    /// <summary></summary>
+    /// <summary>Visualizza pavimenti e muri di una griglia tramite Tilemap.</summary>
     public sealed class DungeonTilemapRenderer : MonoBehaviour
     {
         [Header("Tilemaps")]

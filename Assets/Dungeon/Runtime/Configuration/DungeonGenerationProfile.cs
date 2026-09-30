@@ -25,7 +25,7 @@ namespace Tesi.Dungeon
         private int seed = 12345;
 
         [SerializeField, Min(0)]
-        [Tooltip("Profondita massima dell'albero BSP.")]
+        [Tooltip("Profondità massima dell'albero BSP.")]
         private int maxDepth = 4;
 
         [SerializeField, Min(2)]
@@ -60,7 +60,7 @@ namespace Tesi.Dungeon
         [Tooltip("Larghezza dei corridoi in celle.")]
         private int corridorWidth = 1;
 
-        /// <summary>Seed attualmente salvato nel profilo.<summary>
+        /// <summary>Seed attualmente salvato nel profilo.</summary>
         public int Seed => seed;
 
         public void SetSeed(int newSeed)
